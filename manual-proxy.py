@@ -10,7 +10,7 @@ from utils.banner import banner
 from colorama import Fore, Style, init
 
 # Constants
-PING_INTERVAL = 60
+PING_INTERVAL = 180
 RETRIES = 60
 TOKEN_FILE = 'np_tokens.txt'
 PROXY_FILE = 'proxy.txt'

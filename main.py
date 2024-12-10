@@ -1,18 +1,15 @@
-import requests as reqs
+import os
 import asyncio
-import aiohttp
 import time
 import uuid
 from curl_cffi import requests
 from loguru import logger
-from fake_useragent import UserAgent
 from utils.banner import banner
-from colorama import Fore, Style, init
+from colorama import Fore, Style
 
 # Constants
-PING_INTERVAL = 60
+PING_INTERVAL = 180
 RETRIES = 60
-TOKEN_FILE = 'np_tokens.txt'
 
 DOMAIN_API = {
     "SESSION": "http://api.nodepay.ai/api/auth/session",
@@ -153,14 +150,9 @@ def handle_logout(proxy):
     save_status(proxy, None)
     logger.info(f"Logged out and cleared session info for proxy {proxy}")
 
-def load_proxies(proxy_file):
-    try:
-        with open(proxy_file, 'r') as file:
-            proxies = file.read().splitlines()
-        return proxies
-    except Exception as e:
-        logger.error(f"Failed to load proxies: {e}")
-        raise SystemExit("Exiting due to failure in loading proxies")
+def load_proxies():
+    proxies = os.getenv('PROXIES', '')
+    return proxies.split(',')
 
 def save_status(proxy, status):
     pass  
@@ -181,24 +173,14 @@ def is_valid_proxy(proxy):
 def remove_proxy_from_list(proxy):
     pass  
     
-def load_tokens_from_file(filename):
-    try:
-        with open(filename, 'r') as file:
-            tokens = file.read().splitlines()
-        return tokens
-    except Exception as e:
-        logger.error(f"Failed to load tokens: {e}")
-        raise SystemExit("Exiting due to failure in loading tokens")
+def load_tokens():
+    tokens = os.getenv('TOKENS', '')
+    return tokens.split(',')
         
 async def main():
-    r = reqs.get("https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&proxy_format=protocolipport&format=text", stream=True)
-    if r.status_code == 200:
-       with open('proxies.txt', 'wb') as f:
-           for chunk in r:
-               f.write(chunk)
-    all_proxies = load_proxies('proxies.txt')  
+    all_proxies = load_proxies()  
 
-    tokens = load_tokens_from_file(TOKEN_FILE)
+    tokens = load_tokens()
     if not tokens:
         print("Token cannot be empty. Exiting the program.")
         exit()
@@ -229,8 +211,8 @@ async def main():
                 new_task = asyncio.create_task(
                     render_profile_info(proxy, token))
                 tasks[new_task] = proxy
-            await asyncio.sleep(3)
-    await asyncio.sleep(10)  
+            await asyncio.sleep(PING_INTERVAL)
+        await asyncio.sleep(PING_INTERVAL)  
 
 if __name__ == '__main__':
     show_copyright()
