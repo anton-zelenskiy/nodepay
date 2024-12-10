@@ -2,6 +2,8 @@ services:
   nodepay:
     build:
       context: .
+    env_file:
+      - .env
     stop_signal: SIGINT
     restart: unless-stopped
     command: "python3 main.py"
