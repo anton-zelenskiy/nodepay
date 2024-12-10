@@ -1,6 +1,5 @@
-version: '3'
 services:
-  bot:
+  nodepay:
     build:
       context: .
     stop_signal: SIGINT
