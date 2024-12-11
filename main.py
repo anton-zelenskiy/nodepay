@@ -40,6 +40,8 @@ def valid_resp(resp):
     
 async def render_profile_info(proxy, token):
     global browser_id, account_info
+    
+    await asyncio.sleep(PING_INTERVAL)
 
     try:
         np_session_info = load_session_info(proxy)
@@ -59,7 +61,7 @@ async def render_profile_info(proxy, token):
             account_info = np_session_info
             await start_ping(proxy, token)
     except Exception as e:
-        logger.error(f"Error in render_profile_info for proxy {proxy}: {e}")
+        logger.error(f"Error in render_profile_info for proxy {proxy}, token {token}: {e}")
         error_message = str(e)
         if any(phrase in error_message for phrase in [
             "sent 1011 (internal error) keepalive ping timeout; no close frame received",
