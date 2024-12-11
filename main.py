@@ -187,6 +187,8 @@ async def main():
 
     while True:
         for token in tokens:
+            await asyncio.sleep(PING_INTERVAL)
+            
             active_proxies = [
             proxy for proxy in all_proxies if is_valid_proxy(proxy)][:100]
             tasks = {asyncio.create_task(render_profile_info(
@@ -211,7 +213,7 @@ async def main():
                 new_task = asyncio.create_task(
                     render_profile_info(proxy, token))
                 tasks[new_task] = proxy
-            await asyncio.sleep(PING_INTERVAL)
+                
         await asyncio.sleep(PING_INTERVAL)  
 
 if __name__ == '__main__':
