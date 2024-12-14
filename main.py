@@ -9,7 +9,7 @@ from utils.banner import banner
 from colorama import Fore, Style
 
 # Constants
-PING_INTERVAL = 180
+PING_INTERVAL = 300
 RETRIES = 60
 
 DOMAIN_API = {
